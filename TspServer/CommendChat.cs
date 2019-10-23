@@ -10,11 +10,10 @@ namespace TspServer
 {
     class CommendChat
     {
-        static MessageProcessing MesProc;
-        static Validate valid;
+        private Validate Valid = new Validate();
         protected internal void ComandMessege(string message, Client client, Server server)
         {
-            var search = valid.IsAllOrPrivate(message);
+            var search = Valid.IsAllOrPrivate(message);
             switch (search)
             {
                 case "Как дела?":
@@ -26,10 +25,10 @@ namespace TspServer
                 case "Как настроение?":
                     server.ServerMessage("У меня прекрасное настроение!", client.Id);
                     break;
-                /*case ".CountUser":
-                    var Names = MesProc.NamesUsers();
+                case ".CountUser":
+                    var Names = server.NamesUsers();
                     server.ServerMessage(Names, client.Id);
-                    break;*/
+                    break;
                 case "Пока":
                     server.ServerMessage("Прощай, заходи еще:)", client.Id);
                     server.RemoveConnection(client.Id);
@@ -37,9 +36,8 @@ namespace TspServer
                 case "/All":
                     server.AllMessage(message, client.Id);
                     break;
-                case "/private":
-                    string id = "";
-                    server.PrivateMessage(message, id);
+                case "/privat":
+                    server.PrivateMessage(message, client.Id);
                     break;
                 default:
                     server.ServerMessage("Такой команды нет :(", client.Id);

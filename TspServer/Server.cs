@@ -12,7 +12,7 @@ namespace TspServer
     {
         static TcpListener tcpListener; 
         List<Client> clients = new List<Client>();
-        static MessageProcessing MesPeoc;
+        MessageProcessing MesPeoc = new MessageProcessing();
 
         protected internal void AddConnection(Client Client)
         {
@@ -56,18 +56,23 @@ namespace TspServer
 
         protected internal void AllMessage(string message, string id)
         {
-            var newMessage = MesPeoc.NewMessage(message, id,clients);
-            byte[] data = Encoding.Unicode.GetBytes(newMessage);
+            var newMessage = MesPeoc.AllMessage(message, id, clients);
+            Message(newMessage, id);
+            
+        }
+        public void Message(string message ,string id)
+        {
+            byte[] data = Encoding.Unicode.GetBytes(message);
             for (int i = 0; i < clients.Count; i++)
             {
-                if (clients[i].Id != id) 
+                if (clients[i].Id != id)
                 {
                     clients[i].Stream.Write(data, 0, data.Length);
                 }
             }
         }
 
-        protected internal void ServerMessage(string message, string id)
+        public void ServerMessage(string message, string id)
         {
             byte[] data = Encoding.Unicode.GetBytes(message);
             for (int i = 0; i < clients.Count; i++)
@@ -79,11 +84,12 @@ namespace TspServer
             }
         }
 
-        protected internal void PrivateMessage(string message, string userName)
+        public void PrivateMessage(string message, string id)
         {
+            string userName = MesPeoc.PrivateUserMessega(message);
             var client = clients.Where(x => x.UserName == userName).FirstOrDefault();
 
-            byte[] data = Encoding.Unicode.GetBytes(message);
+            byte[] data = Encoding.Unicode.GetBytes(MesPeoc.PrivateNewMessage(message,id, clients));
             client.Stream.Write(data, 0, data.Length);
         }
 
@@ -97,6 +103,17 @@ namespace TspServer
             }
             Environment.Exit(0);
         }
-       
+
+        public string NamesUsers()
+        {
+            List<string> Users = new List<string>();
+            foreach (var item in clients)
+            {
+                Users.Add(item.UserName);
+            }
+            string NamesUsers = Users.Aggregate((x, y) => x + "," + y);
+            return NamesUsers;
+        }
+
     }
 }

@@ -34,7 +34,7 @@ namespace TspServer
 
                 message = UserName + " вошел в чат";
 
-                //server.AllMessage(message, this.Id);
+                server.Message(message, this.Id);
                 Console.WriteLine(message);
 
                 while (true)
@@ -48,7 +48,7 @@ namespace TspServer
                     {
                         message = String.Format("{0}: покинул чат", UserName);
                         Console.WriteLine(message);
-                        server.AllMessage(message, this.Id);
+                        server.Message(message, this.Id);
                         break;
                     }
                 }
